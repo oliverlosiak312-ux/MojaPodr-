@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Wyprawa promem — Świnoujście → Malmö</title>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Sacramento&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1: linear-gradient(135deg,#fff8e6,#ffd6f5,#e6f3ff);
+      --bg2: linear-gradient(135deg,#e6ffe9,#fff5e6,#fce6ff);
+      --accent:#9c27b0;
+      --fairy1: rgba(255,255,255,0.7);
+    }
+    html,body{height:100%;margin:0;font-family:'Permanent Marker',cursive;}
+    body{background:var(--bg1);color:#2a1233;padding:28px;position:relative;overflow-x:hidden;}
+
+    @keyframes floatStars{
+      0%{transform:translateY(0) scale(1);opacity:1}
+      100%{transform:translateY(-100vh) scale(0.3);opacity:0}
+    }
+    .star{position:absolute;width:6px;height:6px;background:white;border-radius:50%;animation:floatStars linear infinite;box-shadow:0 0 8px white;}
+
+    header{display:flex;align-items:center;gap:18px;margin-bottom:20px;position:relative;z-index:2}
+    .logo{width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at top left,#ff80ab,#ba68c8,#7986cb);display:flex;align-items:center;justify-content:center;color:white;font-size:22px;box-shadow:0 0 15px rgba(0,0,0,0.2)}
+    h1{font-size:40px;margin:0;font-family:'Sacramento',cursive;color:#4a148c;text-shadow:2px 2px 4px rgba(255,255,255,0.6)}
+    p.lead{margin:6px 0 0;font-size:18px;opacity:.95;color:#6a1b9a}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px;position:relative;z-index:2}
+    .card{background:var(--fairy1);backdrop-filter:blur(6px);padding:16px;border-radius:20px;box-shadow:0 8px 22px rgba(156,39,176,0.25);cursor:pointer;transition:transform .25s ease,box-shadow .25s ease,max-height .25s ease;overflow:hidden;position:relative}
+    .card:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 14px 28px rgba(156,39,176,0.35)}
+    .time{font-size:13px;color:var(--accent);margin-bottom:6px}
+    .title{font-size:22px;margin-bottom:6px;color:#4a148c}
+    .desc{font-size:15px;line-height:1.3}
+
+    .card.expanded{grid-column:span 2;transform:scale(1.03);box-shadow:0 18px 40px rgba(156,39,176,0.35)}
+    .card .more{margin-top:10px;display:none}
+    .card.expanded .more{display:block}
+
+    .modal{position:fixed;inset:0;background:rgba(50,0,70,0.65);display:none;align-items:center;justify-content:center;padding:18px;z-index:1200}
+    .modal.open{display:flex}
+    .modal-content{background:linear-gradient(135deg,#fff,#f3e5f5);border-radius:20px;max-width:980px;width:100%;max-height:90vh;overflow:auto;padding:24px;position:relative;box-shadow:0 0 20px rgba(0,0,0,0.4)}
+    .modal-content img{max-width:100%;border-radius:12px;box-shadow:0 0 12px rgba(0,0,0,0.3)}
+    .close{position:absolute;right:14px;top:10px;font-size:28px;color:#4a148c;cursor:pointer}
+
+    nav{margin-top:20px;display:flex;gap:12px;z-index:2;position:relative}
+    nav button{background:transparent;border:2px solid rgba(10,20,30,0.08);padding:8px 12px;border-radius:14px;font-family:inherit;cursor:pointer;transition:.25s}
+    nav button.active{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 0 10px rgba(156,39,176,0.5)}
+    nav button:hover{transform:scale(1.05)}
+
+    section.gallery{margin-top:18px;padding:18px;border-radius:20px;background:var(--bg2);box-shadow:0 6px 18px rgba(0,0,0,0.15);z-index:2;position:relative}
+    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+    .gallery-grid img{width:100%;height:120px;object-fit:cover;border-radius:14px;cursor:pointer;transition:transform .25s}
+    .gallery-grid img:hover{transform:scale(1.08) rotate(1deg);box-shadow:0 0 12px rgba(156,39,176,0.4)}
+
+    footer{margin-top:26px;opacity:.85;text-align:center;font-size:14px;color:#6a1b9a}
+
+    @media (max-width:900px){.card.expanded{grid-column:span 1}}
+    @media (max-width:520px){h1{font-size:28px}}
+  </style>
+</head>
+<body>
+  <script>
+    for(let i=0;i<40;i++){
+      const star=document.createElement('div');
+      star.classList.add('star');
+      star.style.left=Math.random()*100+'vw';
+      star.style.top=Math.random()*100+'vh';
+      star.style.animationDuration= 4+Math.random()*6+'s';
+      star.style.animationDelay= Math.random()*5+'s';
+      document.body.appendChild(star);
+    }
+  </script>
+
+  <header>
+    <div class="logo">✨</div>
+    <div>
+      <h1>Baśniowa wyprawa — Świnoujście → Malmö</h1>
+      <p class="lead">Magiczna relacja z podróży promem i szwedzkiego poranka ✨</p>
+    </div>
+  </header>
+
+  <nav>
+    <button id="btn-desc" class="active">Relacja</button>
+    <button id="btn-gallery">Galeria</button>
+    <button id="download">Pobierz stronę (.html)</button>
+  </nav>
+
+  <!-- Sekcja Relacji -->
+  <section id="desc">
+    <p style="margin-top:12px;">Kliknij kartę, aby rozwinąć szczegóły, lub kliknij dwa razy, aby wejść w bajkowy podgląd z obrazami. ✨</p>
+    <div class="grid" id="cards">
+      <div class="card" data-title="Wyjazd do portu" data-content="Wyruszamy z domu do portu w Świnoujściu. Atmosfera jak z bajki — muzyka, latarki i ekscytacja.">
+        <div class="time">Start</div>
+        <div class="title">Wyruszamy do portu</div>
+        <div class="desc">Wszystko gotowe — jedziemy na prom!</div>
+        <div class="more"></div>
+      </div>
+
+      <div class="card" data-title="Plaża w Świnoujściu" data-content="W Świnoujściu poszliśmy na plażę, bo czekaliśmy na statek. Fale tańczyły jak w bajce, a piasek skrzył się od gwiezdnego pyłu.">
+        <div class="time">Przed rejsem</div>
+        <div class="title">Plaża i oczekiwanie</div>
+        <div class="desc">Czekamy na odprawę, chwila relaksu.</div>
+        <div class="more"></div>
+      </div>
+
+      <div class="card" data-title="Wjazd na prom" data-content="O 21:30 wjeżdżamy dwoma samochodami na prom Finnlines. Statek świecił jak magiczny pałac na wodzie." data-image="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Rear_from_Finnlines_ferry_Finnmaid.jpg/1280px-Rear_from_Finnlines_ferry_Finnmaid.jpg">
+        <div class="time">21:30</div>
+        <div class="title">Wjazd na prom — Finnlines</div>
+        <div class="desc">Dwa auta, krótkie kolejki, załoga w gotowości.</div>
+        <div class="more">Kliknij by zobaczyć zdjęcie promu Finnlines.</div>
+      </div>
+
+      <div class="card" data-title="Przypłynięcie" data-content="Dopływamy do Malmö o 6:30 rano. Poranek pachniał kawą, a nad wodą unosiła się bajkowa mgła.">
+        <div class="time">06:30</div>
+        <div class="title">Przylot do Malmö</div>
+        <div class="desc">Witamy w Szwecji — nowy rozdział bajki.</div>
+        <div class="more"></div>
+      </div>
+
+      <div class="card" data-title="Sklep Willys" data-content="Po przypłynięciu odwiedziliśmy sklep Willys — półki pełne skarbów i kolorowych smakołyków.">
+        <div class="time">Poranek</div>
+        <div class="title">Willys — zakupy</div>
+        <div class="desc">Nabytki i lokalne cuda.</div>
+        <div class="more"></div>
+      </div>
+
+      <div class="card" data-title="Zwiedzanie" data-content="Potem pozwiedzaliśmy różne miejsca — uliczki jak z bajki, kawiarnie pełne aromatu i magiczne zakamarki.">
+        <div class="time">Dzień</div>
+        <div class="title">Pozwiedzaliśmy</div>
+        <div class="desc">Spacer, zdjęcia i bajkowy klimat.</div>
+        <div class="more"></div>
+      </div>
+
+      <div class="card" data-title="Most Öresund" data-content="Most łączący Szwecję z Danią wyglądał jak srebrna wstęga na niebie — prawdziwa bajkowa sceneria.">
+        <div class="time">Widok</div>
+        <div class="title">Most do Danii</div>
+        <div class="desc">Öresund Bridge — magia inżynierii.</div>
+        <div class="more"></div>
+      </div>
+
+      <div class="card" data-title="Hotel w Lund" data-content="Nocleg w Lund — miasteczko wyglądało jak z baśni, z kamieniczkami jak z obrazka.">
+        <div class="time">Nocleg</div>
+        <div class="title">Hotel — Lund</div>
+        <div class="desc">Bajkowe miejsce na odpoczynek.</div>
+        <div class="more"></div>
+      </div>
+
+      <div class="card" data-title="Powrót" data-content="Następnego dnia wracamy promem. Morze szumiało jak kołysanka na pożegnanie bajkowej przygody.">
+        <div class="time">Powrót</div>
+        <div class="title">Powrót do domu</div>
+        <div class="desc">Ostatnie spojrzenia na morze.</div>
+        <div class="more"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sekcja Galerii -->
+  <section id="gallery" class="gallery" style="display:none">
+    <h2 style="margin-top:0">Galeria z wyprawy</h2>
+    <p style="margin-top:6px;margin-bottom:12px;opacity:.9">Magiczne wspomnienia — kliknij, aby je powiększyć.</p>
+    <div class="gallery-grid">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Rear_from_Finnlines_ferry_Finnmaid.jpg/640px-Rear_from_Finnlines_ferry_Finnmaid.jpg" alt="Prom Finnlines" />
+      <img src="https://picsum.photos/seed/1/800/600" alt="wspomnienie 1" />
+      <img src="https://picsum.photos/seed/2/800/600" alt="wspomnienie 2" />
+      <img src="https://picsum.photos/seed/3/800/600" alt="wspomnienie 3" />
+    </div>
+  </section>
+
+  <footer>
+    <small>✨ Bajkowa strona — klikaj, odkrywaj i wspominaj ✨</small>
+  </footer>
+
+  <div id="modal" class="modal" role="dialog" aria-modal="true">
+    <div class="modal-content" id="modal-content"></div>
+    <div class="close" id="modal-close" aria-label="Zamknij">✕</div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.card').forEach(card=>{
+      card.addEventListener('click',()=>{ card.classList.toggle('expanded'); });
+      card.addEventListener('dblclick',(e)=>{
+        e.stopPropagation();
+        const title = card.dataset.title || '';
+        const content = card.dataset.content || '';
+        const img = card.dataset.image || '';
+        let html = `<h2>${title}</h2><p>${content}</p>`;
+        if(img){ html += `<div style='margin-top:12px'><img src='${img}' alt='${title}' /></div>`; }
+        document.getElementById('modal-content').innerHTML = html;
+        document.getElementById('modal').classList.add('open');
+      });
+    });
+
+    document.querySelectorAll('.gallery-grid img').forEach(img=>{
+      img.addEventListener('click',()=>{
+        document.getElementById('modal-content').innerHTML = `<img src='${img.src}' alt='galeria' />`;
+        document.getElementById('modal').classList.add('open');
+      });
+    });
+
+    document.getElementById('modal-close').addEventListener('click',()=>{
+      document.getElementById('modal').classList.remove('open');
+    });
+    document.getElementById('modal').addEventListener('click',(e)=>{ if(e.target.id==='modal') document.getElementById('modal').classList.remove('open'); });
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') document.getElementById('modal').classList.remove('open'); });
+
+    const btnDesc=document.getElementById('btn-desc');
+    const btnGallery=document.getElementById('btn-gallery');
+    const descSec=document.getElementById('desc');
+    const gallerySec=document.getElementById('gallery');
+    btnDesc.addEventListener('click',()=>{btnDesc.classList.add('active');btnGallery.classList.remove('active');descSec.style.display='block';gallerySec.style.display='none';});
+    btnGallery.addEventListener('click',()=>{btnGallery.classList.add('active');btnDesc.classList.remove('active');descSec.style.display='none';gallerySec.style.display='block';});
+
+    document.getElementById('download').addEventListener('click',()=>{
+      const html = `<!doctype html>\n` + document.documentElement.outerHTML;
+      const blob = new Blob([html],{type:'text/html'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;a.download='wyprawa.html';a.click();URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
